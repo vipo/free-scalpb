@@ -9,11 +9,11 @@ lazy val root = (project in file("."))
     )),
     name := "ScalaPB Free"
   )
-  .aggregate(generator, cats)
+  .aggregate(cats, commons, tests)
 
-lazy val generator = (project in file("generator"))
+lazy val commons = (project in file("commons"))
   .settings(
-    name := "ScalaPB Free Generator",
+    name := "ScalaPB Free Commons",
     libraryDependencies ++= Seq(
       scalaTest % Test,
       scalaPbRuntime,
@@ -22,8 +22,38 @@ lazy val generator = (project in file("generator"))
     )
   )
 
+lazy val tests = (project in file("tests"))
+  .settings(
+    name := "ScalaPB Free Tests",
+    libraryDependencies ++= Seq(
+      scalaTest % Test,
+      scalaPbRuntime,
+      scalaPbGrpcRuntime,
+      scalaPbCompiler
+    )
+  )
+
+lazy val generator = (project in file("plugin"))
+  .settings(
+    name := "ScalaPB Free Plugin",
+    sbtPlugin := true,
+    libraryDependencies ++= Seq(
+      scalaTest % Test,
+      scalaPbRuntime,
+      scalaPbGrpcRuntime,
+      scalaPbCompiler,
+      scalaPbRuntimeProtos
+    )
+  ).dependsOn(commons)
+
+
 lazy val cats = (project in file("cats"))
   .settings(
     name := "ScalaPB Free Cats Integration",
     libraryDependencies += scalaTest % Test
   )
+
+PB.targets in Compile := Seq(
+  scalapb.gen() -> (sourceManaged in Compile).value
+  FreeAdtGenerator -> (sourceManaged in Compile).value
+)

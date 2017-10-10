@@ -1,9 +1,9 @@
-package eu.homedir.generator
+package eu.homedir.scalapbfree
 
 import com.google.protobuf.Descriptors.FileDescriptor
 import com.google.protobuf.ExtensionRegistry
 import com.google.protobuf.compiler.PluginProtos.{CodeGeneratorRequest, CodeGeneratorResponse}
-import com.trueaccord.scalapb.compiler.{DescriptorPimps, GeneratorParams, ProtobufGenerator}
+import com.trueaccord.scalapb.compiler.{DescriptorPimps, GeneratorParams}
 import com.trueaccord.scalapb.compiler.ProtobufGenerator.parseParameters
 import protocbridge.ProtocCodeGenerator
 
@@ -14,7 +14,6 @@ object FreeAdtGenerator extends ProtocCodeGenerator {
   override def run(requestBytes: Array[Byte]): Array[Byte] = {
 
     val request = CodeGeneratorRequest.parseFrom(requestBytes,  ExtensionRegistry.newInstance())
-    val vanillaBuilder = CodeGeneratorResponse.newBuilder(ProtobufGenerator.handleCodeGeneratorRequest(request))
     val params: GeneratorParams = parseParameters(request.getParameter).right.get
 
     val fileByName: Map[String, FileDescriptor] =
@@ -26,7 +25,7 @@ object FreeAdtGenerator extends ProtocCodeGenerator {
 
     val generator = new FreeAdtGenerator(params)
 
-    request.getFileToGenerateList.asScala.foldLeft(vanillaBuilder){
+    request.getFileToGenerateList.asScala.foldLeft(CodeGeneratorResponse.newBuilder()){
       case (b, name) =>
         val file: FileDescriptor = fileByName(name)
         val responseFiles = generator(file)
