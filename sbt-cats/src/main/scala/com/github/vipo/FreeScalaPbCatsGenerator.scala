@@ -6,7 +6,7 @@ import com.google.protobuf.compiler.PluginProtos.{CodeGeneratorRequest, CodeGene
 import protocbridge.ProtocCodeGenerator
 import scala.collection.JavaConverters._
 
-object FreeScalaPbGenerator extends ProtocCodeGenerator {
+object FreeScalaPbCatsGenerator extends ProtocCodeGenerator {
 
   override def run(req: Array[Byte]): Array[Byte] = {
     val request = CodeGeneratorRequest.parseFrom(req)
