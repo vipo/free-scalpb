@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package vipo;
+
+message LineItem {
+    string name = 1;
+    float quantity = 2;
+    ProoductId productId = 3;
+}
+
+message LineItems {
+    repeated LineItem items = 1;
+}
+
+message User {
+    int64 id = 1;
+}
+
+message ProoductId {
+    int64 id = 1;
+}
+
+message Price {
+    double price = 1;
+    string currency = 2;
+}
+
+service GoodsService {
+    rpc getItems(User) returns (LineItems);
+}
+
+service PriceService {
+    rpc getPrice(ProoductId) returns (Price);
+}
